@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
+/*
+ * FlowVoice design tokens — see docs/design-system.md.
+ * Colors marked "ref" were read from the rendered reference site (dairy-trends-delta.vercel.app).
+ * Colors marked "derived" are FlowVoice additions needed for accessibility or states the reference lacks.
+ * Type: one family (Figtree, as in the reference), weights 400/600, sizes 14/16/24px.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffcf4;        /* ref --background */
+  --surface: #fffffd;           /* ref --card */
+  --surface-muted: #faf2e7;     /* ref --muted */
+  --sidebar: #fffbf4;           /* ref --sidebar */
+  --foreground: #3c161c;        /* ref --foreground (brand ink) */
+  --muted: #735959;             /* ref --muted-foreground */
+
+  --primary: #dd4c5c;           /* ref --primary (brand berry): charts, icons, decoration */
+  --primary-strong: #c8404f;    /* derived: berry darkened so white text reaches 4.5:1 */
+  --primary-hover: #b33644;     /* derived */
+  --primary-foreground: #fffdfa;/* ref --brand-on-berry */
+  --primary-soft: #ffe4e6;      /* ref --brand-blush: selected nav, hover, badges */
+  --primary-pale: #fff3f1;      /* derived: very light blush for card accents */
+  --rose: #e874b3;              /* ref --chart-5: secondary chart series */
+  --lilac: #a380fe;             /* ref --brand-lilac: tertiary chart series */
+
+  --border: #f3dbd7;            /* ref --border */
+  --border-strong: #e6c3bf;     /* derived: inputs and buttons that need more edge */
+  --ring: #dd4c5c;              /* ref --ring */
+
+  --success: #2f7a4a;           /* derived: readable green (ref mint #8fcb6d is decorative only) */
+  --success-soft: #e6f4ea;
+  --warning: #8a5a00;           /* derived text; ref mango #ffb113 used as fill */
+  --warning-soft: #fff4cc;      /* ref --brand-butter */
+  --danger: #b3261e;            /* derived: ref destructive is #e7000b, too close to the brand red */
+  --danger-soft: #fdecea;
+
+  --radius: 12px;
+  --shadow-card: 0 1px 2px rgba(60, 22, 28, 0.05), 0 1px 3px rgba(60, 22, 28, 0.06);
+  --shadow-pop: 0 8px 24px rgba(60, 22, 28, 0.12);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-sidebar: var(--sidebar);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-pale: var(--primary-pale);
+  --color-rose: var(--rose);
+  --color-lilac: var(--lilac);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  /* Legacy names used across existing pages now resolve to the pink system. */
+  --color-accent: var(--primary);
+  --color-accent-strong: var(--primary-strong);
+  --color-accent-soft: var(--primary-soft);
+  --font-sans: var(--font-sans-family);
+  --radius-md: 10px;
+  --radius-lg: var(--radius);
+  --radius-xl: 16px;
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { font-size: 16px; }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, strong, th { font-weight: 600; }
+code { font-size: 0.92em; }
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+::selection { background: var(--primary-soft); }
+
+/* Shared control styles so links and buttons look identical everywhere. */
+@utility btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  border-radius: 9999px; background: var(--primary-strong); color: var(--primary-foreground);
+  padding: 0.5rem 1.1rem; font-weight: 600; box-shadow: var(--shadow-card);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+  &:hover { background: var(--primary-hover); }
+  &:active { transform: scale(0.98); }
+}
+@utility btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  border-radius: 9999px; border: 1px solid var(--border-strong); background: var(--surface);
+  padding: 0.5rem 1.1rem; font-weight: 600; transition: background-color 0.15s ease;
+  &:hover { background: var(--primary-soft); }
+}
+@utility chip {
+  display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid var(--border-strong);
+  background: var(--surface); padding: 0.2rem 0.8rem; text-transform: capitalize;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  &:hover { background: var(--primary-soft); }
+}
+@utility chip-active {
+  border-color: var(--primary-strong); background: var(--primary-soft); color: var(--primary-hover); font-weight: 600;
+}
+
+/* Entry transition without JS; unsupported browsers just render immediately. */
+.fade-in {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  @starting-style { opacity: 0; transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
